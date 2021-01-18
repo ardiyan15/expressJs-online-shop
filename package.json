@@ -11,7 +11,8 @@
   "author": "Ardiyan Agus",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^2.0.7"
+    "nodemon": "^2.0.7",
+    "sequelize-cli": "^6.2.0"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
