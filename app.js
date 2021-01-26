@@ -13,14 +13,13 @@ const errorController = require('./controllers/error')
 
 const User = require('./models/user')
 
-
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(express.static(path.join(__dirname, 'public')))
 
 app.use((req, res, next) => {
-    User.findById('600e398832ea58783e026947')
+    User.findById('600ec7e291807614a4be28e9')
         .then(user => {
-            req.user = new User(user.name, user.email, user.cart, user._id)
+            req.user = user
             next()
         })
         .catch(err => {
@@ -37,6 +36,18 @@ mongoose.connect(`mongodb+srv://ardiyan:Hiro@)@!@cluster0.hzc5z.mongodb.net/shop
     useNewUrlParser: true
 })
     .then(result => {
+        User.findOne().then(user => {
+            if(!user){
+                const user = new User({
+                    name: 'Ardiyan Agus',
+                    email: 'ardiyan@gmail.com',
+                    cart: {
+                        items: []
+                    }
+                })
+                user.save()
+            }
+        })
         console.log('Connected!')
         app.listen(3000)
     })
