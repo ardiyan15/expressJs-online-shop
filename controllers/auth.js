@@ -145,11 +145,15 @@ exports.postReset = (req, res, next) => {
         return user.save()
       })
       .then(result => {
+        res.redirect('/')
         transporter.sendMail({
           to: email,
           from: 'shop@node-complete.com',
           subject: 'Password reset',
-          html: '<h1>You successfully signed up</h1>'
+          html: `
+            <p>You request password reset</p>
+            <p>Click this <a href="http://localhost:3000/reset/${token}"> link </a> to set a new password</p>
+          `
         })
       })
       .catch(err => console.log(err))
