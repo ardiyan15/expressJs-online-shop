@@ -1,12 +1,14 @@
+const crypto = require('crypto')
 const bcrypt = require('bcryptjs')
 const nodemailer = require('nodemailer')
 const User = require('../models/user');
+require('dotenv').config()
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'ardhiyan15@gmail.com',
-    pass: 'veteran&^*)!%'
+    user: process.env.email,
+    pass: process.env.pass
   }
 })
 
@@ -28,7 +30,6 @@ exports.getLogin = (req, res, next) => {
 exports.getSignup = (req, res, next) => {
   let message = req.flash('error')
   if(message.length > 0) {
-    console.log(message)
     message = message[0]
   } else {
     message = null
@@ -110,3 +111,47 @@ exports.postLogout = (req, res, next) => {
     res.redirect('/');
   });
 };
+
+exports.getReset = (req, res, next) => {
+  let message = req.flash('error')
+  if(message.length > 0) {
+    message = message[0]
+  } else {
+    message = null
+  }
+  res.render('auth/reset', {
+    path: '/reset',
+    pageTitle: 'Reset Password',
+    errorMessage: message
+  });
+}
+
+exports.postReset = (req, res, next) => {
+  const email = req.body.email
+  crypto.randomBytes(32, (err, buffer) => {
+    if(err){
+      console.log(err);
+      return res.redirect('/reset')
+    }
+    const token = buffer.toString('hex')
+    User.findOne({email: email})
+      .then(user => {
+        if (!user) {
+          req.flash('error', 'Email not found')
+          return res.redirect('/reset')
+        }
+        user.resetToken = token
+        user.resetTokenExpiration = Date.now() + 36000000
+        return user.save()
+      })
+      .then(result => {
+        transporter.sendMail({
+          to: email,
+          from: 'shop@node-complete.com',
+          subject: 'Password reset',
+          html: '<h1>You successfully signed up</h1>'
+        })
+      })
+      .catch(err => console.log(err))
+  })
+}
