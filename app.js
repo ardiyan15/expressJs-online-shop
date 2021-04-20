@@ -11,7 +11,6 @@ const multer = require('multer')
 const errorController = require('./controllers/error');
 const User = require('./models/user');
 
-const user = 'ardiyan'
 const password = encodeURIComponent('Hiro@)@!')
 const MONGODB_URI =
   `mongodb://ardiyan:${password}@cluster0-shard-00-00.hzc5z.mongodb.net:27017,cluster0-shard-00-01.hzc5z.mongodb.net:27017,cluster0-shard-00-02.hzc5z.mongodb.net:27017/shop?ssl=true&replicaSet=atlas-9m52el-shard-0&authSource=admin&retryWrites=true&w=majority`;
@@ -51,7 +50,8 @@ const authRoutes = require('./routes/auth');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(multer({storage: fileStorage, fileFilter: fileFilter}).single('image'))
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')))
+app.use('/images', express.static(path.join(__dirname, 'images')))
 app.use(
   session({
     secret: 'my secret',
