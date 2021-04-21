@@ -55,7 +55,7 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = image.path
 
   const product = new Product({
-    _id: new mongoose.Types.ObjectId('600eccfda7d14734582f75ae'),
+    // _id: new mongoose.Types.ObjectId('600eccfda7d14734582f75ae'),
     title: title,
     price: price,
     description: description,
@@ -86,6 +86,7 @@ exports.postAddProduct = (req, res, next) => {
       // res.redirect('/500')
       const error = new Error(err)
       error.httpStatusCode = 500
+      console.log(error)
       return next(error)
     });
 };
